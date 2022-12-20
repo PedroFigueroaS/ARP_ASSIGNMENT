@@ -1,9 +1,9 @@
-# ARP-Hoist-Assignment
-Base project structure for the first *Advanced and Robot Programming* (ARP) assignment.
-The project provides the basic functionalities for the **Command** and **Inspection processes**, both of which are implemented through the *ncurses library* as simple GUIs. In particular, the repository is organized as follows:
-- The `src` folder contains the source code for the Command, Inspection and Master processes.
-- The `include` folder contains all the data structures and methods used within the ncurses framework to build the two GUIs. Unless you want to expand the graphical capabilities of the UIs (which requires understanding how ncurses works), you can ignore the content of this folder, as it already provides you with all the necessary functionalities.
-- The `bin` folder is where the executable files are expected to be after compilation
+# ARP-Hoist-Assignment-User Guide to Compile and run the project
+
+In particular, the repository is organized as follows:
+- The `src` folder contains the source code for the Command, Inspection, Master, Motor X, Motor Z and the Watchdog
+- The `include` folder contains all the data structures and methods used within the ncurses framework to build the two GUIs. 
+- The `bin` folder is where the executable files of the codes in the src files are stored
 
 ## ncurses installation
 To install the ncurses library, simply open a terminal and type the following command:
@@ -11,27 +11,44 @@ To install the ncurses library, simply open a terminal and type the following co
 sudo apt-get install libncurses-dev
 ```
 
-## Compiling and running the code
-The Command and Inspection processes depend on the ncurses library, which needs to be linked during the compilation step. Furthermore, the Inspection process also uses the mathematical library for some additional computation. Therefore the steps to compile are the following:
-1. for the **Inspection process**:
-	```console
-	gcc src/inspection_console.c -lncurses -lm -o bin/inspection
-	```
-2. for the **Command process**:
-	```console
-	gcc src/command_console.c -lncurses -o bin/command
-	```
-3. for the **Master process**:
-	```console
-	gcc src/master.c -o bin/master
-	```
-	
-After compiling, **assuming you have Konsole installed in your system** as per the professor's indications, you can **simply run the Master executable**, which will be responsible of spawning the two GUIs:
+## Compiling the project
+
+In the file where the src, include bin files are stored, there is a shell executable called build.sh. This executable is run as it follows:
+
 ```console
-./bin/master
+./build.sh
 ```
+the content of this executable are the following code lines:
+```console
+#! /usr/bin/bash
+gcc ./src/inspection_console.c -lncurses -lm -o ./bin/inspection
+gcc ./src/command_console.c -lncurses -o ./bin/command
+gcc ./src/motor_x.c -o ./bin/motor_x
+gcc ./src/motor_z.c -o ./bin/motor_z
+gcc ./src/world.c -o ./bin/world
+gcc ./src/watchdog.c -o ./bin/watchdog
+gcc ./src/master.c -o ./bin/master
+```
+This shell code allows to compile all the process involved in the simulation, and also being a more efficient way to make modifications.
 
-## Troubleshooting
+## Running the project
 
-Should you experience some weird behavior after launching the application (buttons not spawning inside the GUI or graphical assets misaligned) simply try to resize the terminal window, it should solve the bug.
+In the same address of the shell executable to compile the project, there is the other executable that allows to run the project called run_program.sh. In a terminal, type the next command
+
+```console
+./build.sh
+```
+the content of this executable are the following code lines:
+
+```console
+konsole  -e ./bin/master
+```
+This shell code allows to run the master code of the project, that in its own run and spawn the other process involved in the project.
+
+## Troubleshooting after launching the run executable
+
+It is possible that after launching the run_program.sh, the motor x or motor z process crashes and compromises the simulation. In any case, you should try to terminate the other process and launch again the shell executable.
+
+
+
 
