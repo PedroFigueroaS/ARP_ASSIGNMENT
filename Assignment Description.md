@@ -13,7 +13,8 @@ In the master code, in order to call other process, it is used a spawn function 
 ## The command console process
 The command console is the first part of the simulation, that allows the user to send velocity data to the motor process.
 
-The command console will send a velocity value to each motor process always, independently if one of the buttons is pushed/clicked, in order to avoid the blocking issue of the named pipes while reading the data sent. There are two float variables (velx,vely), that are the velocity data sent through pipes to the motor processess
+The command console will send a velocity value to each motor process always, independently if one of the buttons is pushed/clicked, in order to avoid the blocking issue of the named pipes while reading the data sent. There are two float variables (velx,vely), that are the velocity data sent through pipes to the motor processess.
+
 Because the code initializes with velx=0, and vely=0, the velocity sent to the motor process will be zero, thus the position will be also zero and will only increase or decrease if one of the buttons is pushed. 
 
 Depending of the axis, each time a V+ or V- button is pressed, the velocity variable will increase or decrease 0.25, until they reach a max/min velocity of +/-2. If the stop button of each axis is pushed, the velocity value will become zero, stopping the movement of the hoist.
