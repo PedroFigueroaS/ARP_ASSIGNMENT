@@ -19,45 +19,38 @@ Because the code initializes with velx=0, and vely=0, the velocity sent to the m
 
 Depending of the axis, each time a V+ or V- button is pressed, the velocity variable will increase or decrease 0.25, until they reach a max/min velocity of +/-2. If the stop button of each axis is pushed, the velocity value will become zero, stopping the movement of the hoist.
 
-The command console also have three signals interruptions:                                                   
+The command console also have three signal interruptions:
+
 Exit handler: This interruption causes the programm to end its execution, due to the task of the watchdog.
+
 Stop: This interruption causes to convert any value of velocity into 0, due to the stop/reset button of the inspection console.
+
 k_process: This interruption is activated each time a button is pushed, and to send a signal to the watchdog.
 
-## Compiling the project
+## MotorX/Z processes
 
-In the file where the src, include bin files are stored, there is a shell executable called build.sh. This executable is run as it follows:
+The MotorX/Z processes receive the information (velocity) from the command console, and compute the position of the hoist. Into the motor process there are two named pipes created, one for reading the information that comes from the command console, and the other one to write this information to the inspection console.
 
-```console
-./build.sh
-```
-the content of this executable are the following code lines:
-```console
-#! /usr/bin/bash
-gcc ./src/inspection_console.c -lncurses -lm -o ./bin/inspection
-gcc ./src/command_console.c -lncurses -o ./bin/command
-gcc ./src/motor_x.c -o ./bin/motor_x
-gcc ./src/motor_z.c -o ./bin/motor_z
-gcc ./src/world.c -o ./bin/world
-gcc ./src/watchdog.c -o ./bin/watchdog
-gcc ./src/master.c -o ./bin/master
-```
-This shell code allows to compile all the process involved in the simulation, and also being a more efficient way to make modifications.
+The computed position also have limits, in the X axis from 0 to 38, and the Z axis from 0 to 9. 
 
-## Running the project
+Both motor process have two signal interruption:
 
-In the same address of the shell executable to compile the project, there is the other executable that allows to run the project called run_program.sh. In a terminal, type the next command
+Exit handler: This interruption causes the programm to end its execution, due to the task of the watchdog.
 
-```console
-./build.sh
-```
-the content of this executable are the following code lines:
+reset: This interruption causes to return the position in any motor process to 0
 
-```console
-konsole  -e ./bin/master
-```
-This shell code allows to run the master code of the project, that in its own run and spawn the other process involved in the project.
+## World process
 
-## Troubleshooting after launching the run executable
+The World process reads the position computed from the motor processes, and adds a percentage of error to obtain real measures of the position of the hoist, before sending this position to the inspection console. 
 
-It is possible that after launching the run_program.sh, the motor x or motor z process crashes and compromises the simulation. In any case, you should try to terminate the other process and launch again the shell executable.
+To read data from two different pipes at the same time, it is necessary to implement the select command. The value obtained from the select command will enter in a switch loop to evaluate three different situations: if the select value returns -1, there will be an error in the select command, if the returned value is 2, the two pipes from the motor processes write information, and it will have to randomly select one of them to read, and if the returned value is 1, only one pipe have information to read, and the system have to decide which one of them it is. 
+
+After reading and adding the measure error to the positions, another pipe is open to write a string of (posx,posz) and sent it to the inspection console.
+
+The world process have one signal interruption:
+
+Exit handler: This interruption causes the programm to end its execution, due to the task of the watchdog.
+
+## Inspection Console
+
+The inspection
