@@ -53,4 +53,27 @@ Exit handler: This interruption causes the programm to end its execution, due to
 
 ## Inspection Console
 
-The inspection
+The inspection console receives from the world process a pipe that writes the desired coordinate of the hoist, and proceeds to plot it in the window. Also have two buttons that will send interruption signals. The S(Stop) button, when pushed will make the hoist to stop it in its current position, and wait to receive a change in the velocity. The R(Reset) button, when pushed will make the hoist to return to the origin.
+
+The inspection console have four signal interruption:
+
+Exit handler: This interruption causes the programm to end its execution, due to the task of the watchdog.
+
+stop: This interruption causes to send another interruption signal to the command console, to stop the hoist, changing any velocity value to 0
+
+reset: This interruption causes to send another interruption signal to the motor X/Z process, to return the hoist to the origin, changing any position value to 0.
+
+k_process: This interruption is activated each time a button is pushed, and to send a signal to the watchdog.
+
+## Watchdog process
+
+The watchdog process checks for the other process that involves command interaction (command console and inspection console). If after a certain time there are no interaction, the watchdog will kill and close the other process, ending the simulation
+
+The watchdog process have two signal interruption:
+
+kmaster: This interruption will request the PID of the other process involved in the simulation, and will send to each one of them a signal to end their execution
+
+k_process: This interruption causes the watchdog process to reset its counter each time a button is pushed.
+
+
+
