@@ -18,10 +18,7 @@ Because the code initializes with velx=0, and vely=0, the velocity sent to the m
 
 Depending of the axis, each time a V+ or V- button is pressed, the velocity variable will increase or decrease 0.25, until they reach a max/min velocity of +/-2. If the stop button of each axis is pushed, the velocity value will become zero, stopping the movement of the hoist.
 
-The command console also have three signals interruptions: 
-  Exit handler: This interruption causes the programm to end its execution, due to the task of the watchdog
-  Stop: This interruption causes to convert any value of velocity into 0, due to the stop/reset button of the inspection console
-  k_process: This interruption is activated each time a button is pushed, and to send a signal to the watchdog
+The command console also have three signals interruptions:                                                                                                          Exit handler: This interruption causes the programm to end its execution, due to the task of the watchdog                                                               Stop: This interruption causes to convert any value of velocity into 0, due to the stop/reset button of the inspection console                                k_process: This interruption is activated each time a button is pushed, and to send a signal to the watchdog
 
 ## Compiling the project
 
